@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./SearchCat.css";
 import "./SearchCatForm";
-import SearchCatForm from "./SearchCatFormPF";
+import SearchCatForm from "./SearchCatForm";
 
 class SearchCat extends Component {
   constructor(props) {
