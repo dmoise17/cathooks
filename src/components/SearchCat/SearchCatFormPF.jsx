@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Select from "react-select";
 
 import config from "../../config.json";
@@ -11,12 +11,12 @@ const baseUrl = "https://api.thecatapi.com/v1";
 
 function SearchCatForm({ excludedCats, addCats, limit }) {
     const loading = false;
-    const selectedCats = [];
 
     const [selectedCategory, setSelectedCategory] = useState();
     const [selectedImageTypes, setSelectedTimageTypes] = useState([]);
     const [categories, setCategories] = useState([]);
     const [cats, setCats] = useState([]);
+    const [selectedCats, setSelectedCats] = useState([]);
 
     // Fetch categories
     useEffect(() => {
@@ -41,6 +41,20 @@ function SearchCatForm({ excludedCats, addCats, limit }) {
             .then(response => response.json())
             .then(setCats);
     }, [setCats, selectedCategory, selectedImageTypes, limit]);
+
+    // Callbacks
+    const toggleCat = useCallback(cat => {
+        !excludedCats.includes(cat.url) &&
+            setSelectedCats(toggle(selectedCats, cat.id))
+    }, [excludedCats, selectedCats]);
+
+
+    const addCat = useCallback(() => {
+        const urls = cats
+            .filter(cat => selectedCats.includes(cat.id))
+            .map(cat => cat.url);
+        addCats(urls);
+    });
 
     return <div className="SearchCatForm">
         <Select
@@ -73,18 +87,26 @@ function SearchCatForm({ excludedCats, addCats, limit }) {
                                 }${
                                 excludedCats.includes(cat.url) ? "SearchCatForm-excluded" : ""
                                 }`}
+                            onClick={() => toggleCat(cat)}
                         />
                     ))}
                 </div>
             )}
         {selectedCats.length > 0 && (
             <button
+                onClick = {addCat}
                 className="SearchCatForm-submit"
             >
                 Add Cats
             </button>
         )}
     </div>
+}
+
+function toggle(array, value) {
+    return array.includes(value)
+        ? array.filter(v => v !== value)
+        : [...array, value];
 }
 
 export default SearchCatForm;
