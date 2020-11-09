@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import Select from "react-select";
 
 
@@ -11,16 +11,23 @@ function SearchCatForm({ excludedCats, addCats, limit }) {
     const cats = [];
     const selectedCats = [];
 
+    const [selectedCategory, setSelectedCategory] = useState();
+    const [selectedImageTypes, setSelectedTimageTypes] = useState([]);
+
     return <div className="SearchCatForm">
         <Select
             placeholder="Category"
             className="SearchCatForm-select"
+            value={selectedCategory}
+            onChange={v => setSelectedCategory(v)}
         />
         <Select
             isMulti
             options={imageTypes}
             placeholder="Image type"
             className="SearchCatForm-select"
+            value={selectedImageTypes}
+            onChange={v => setSelectedTimageTypes(v)}
         />
 
         {loading ? (
